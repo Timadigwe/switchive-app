@@ -1,9 +1,89 @@
-import Image from "next/image";
+'use client';
+import { useEffect, useState } from 'react';
+import { fetchProducts, Product } from './services/productService';
+import ProductCard from './components/ProductCard';
+import { motion } from 'framer-motion';
 
 export default function Home() {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+  const [sortOption, setSortOption] = useState<string>('default');
+  const [filterOption, setFilterOption] = useState<string>('');
+
+  useEffect(() => {
+    const getProducts = async () => {
+      const products = await fetchProducts();
+      setProducts(products);
+      setFilteredProducts(products);
+    };
+
+    getProducts();
+  }, []);
+
+  //console.log('products', products);
+
+  const handleSort = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const option = e.target.value;
+    setSortOption(option);
+    const sortedProducts = [...filteredProducts];
+    if (option === 'priceLowToHigh') {
+      sortedProducts.sort((a, b) => a.price - b.price);
+    } else if (option === 'priceHighToLow') {
+      sortedProducts.sort((a, b) => b.price - a.price);
+    }
+    setFilteredProducts(sortedProducts);
+  };
+
+  const handleFilter = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const option = e.target.value;
+    setFilterOption(option);
+    const filtered = products.filter((product) =>
+      product.category.toLowerCase().includes(option.toLowerCase())
+    );
+    setFilteredProducts(filtered);
+  };
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
+      <div className="container mx-auto p-4">
+        <div className="flex flex-col md:flex-row justify-between mb-4">
+          <input
+            type="text"
+            placeholder="Filter by category"
+            value={filterOption}
+            onChange={handleFilter}
+            className="mb-2 md:mb-0 p-2 border bg-black rounded outline-none"
+          />
+          <select
+            value={sortOption}
+            onChange={handleSort}
+            className="p-2 border rounded bg-black ">
+            <option value="default">Default</option>
+            <option value="priceLowToHigh">Price: Low to High</option>
+            <option value="priceHighToLow">Price: High to Low</option>
+          </select>
+        </div>
+        {filteredProducts.length > 0 ? (
+          <motion.div
+            className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}>
+            {filteredProducts.map((product) => (
+              <ProductCard
+                key={product.id}
+                product={product}
+              />
+            ))}
+          </motion.div>
+        ) : (
+          <div className="text-center mt-8 lg:mt-[6.25rem] ">
+            <h2 className="text-2xl font-bold">No products found</h2>
+            <p className="text-gray-600">Try adjusting your filter criteria.</p>
+          </div>
+        )}
+      </div>
+      {/* <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
         <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
           Get started by editing&nbsp;
           <code className="font-mono font-bold">src/app/page.tsx</code>
@@ -107,7 +187,7 @@ export default function Home() {
             Instantly deploy your Next.js site to a shareable URL with Vercel.
           </p>
         </a>
-      </div>
+      </div> */}
     </main>
   );
 }
