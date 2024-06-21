@@ -21,7 +21,7 @@ const Navbar = () => {
         </div>
         <div
           className={`text-xl font-bold ${
-            darkMode ? 'text-gray' : 'text-gray-700'
+            darkMode ? 'text-white' : 'text-gray-700'
           } `}>
           Switchive
         </div>
