@@ -9,7 +9,7 @@ const Navbar = () => {
   return (
     <nav
       className={`flex items-center justify-between p-4 ${
-        darkMode ? '' : 'bg-white'
+        darkMode ? 'bg-black' : 'bg-white'
       }  shadow-md border-b `}>
       <div className="flex items-center space-x-2">
         <div className="w-10 h-10 relative   ">

@@ -20,7 +20,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
 
   return (
     <motion.div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+      className="fixed inset-0 z-50 flex items-center justify-center mx-5 lg:mx-0 bg-black bg-opacity-50"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}>
       <div
